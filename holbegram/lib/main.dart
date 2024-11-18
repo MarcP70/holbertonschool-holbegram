@@ -8,28 +8,40 @@ Future main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Controllers for the input fields
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
+  State<MyApp> createState() => _MyAppState();
+}
 
+class _MyAppState extends State<MyApp> {
+  // Déclaration des contrôleurs en tant que variables de classe
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordConfirmController =
+      TextEditingController();
+
+  @override
+  void dispose() {
+    // Disposez correctement de tous les contrôleurs
+    emailController.dispose();
+    passwordController.dispose();
+    usernameController.dispose();
+    passwordConfirmController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Holbegram',
-      /*
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 62, 13, 146)),
-        useMaterial3: true,
-      ),
-      */
-      // The home is now LoginScreen, with controllers passed as arguments
       home: LoginScreen(
         emailController: emailController,
         passwordController: passwordController,
+        usernameController: usernameController,
+        passwordConfirmController: passwordConfirmController,
       ),
     );
   }
