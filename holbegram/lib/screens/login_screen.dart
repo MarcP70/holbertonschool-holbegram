@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holbegram/widgets/text_field.dart';
 import 'signup_screen.dart';
+import '../methods/auth_methods.dart';
 
 class LoginScreen extends StatefulWidget {
   final TextEditingController emailController;
@@ -87,8 +88,33 @@ class _LoginScreenState extends State<LoginScreen> {
                           const Color.fromARGB(218, 226, 37, 24),
                         ),
                       ),
-                      onPressed: () {
-                        // Add login functionality later
+                      onPressed: () async {
+                        // Appel de la fonction login et stockage du résultat
+                        String res = await AuthMethods().login(
+                          email: widget.emailController.text,
+                          password: widget.passwordController.text,
+                        );
+
+                        // Vérification du résultat pour afficher un Snackbar
+                        if (res == "success") {
+                          // Affiche un Snackbar avec le texte "Login" en cas de succès
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Login'),
+                              backgroundColor:
+                                  Colors.green, // Couleur verte pour succès
+                            ),
+                          );
+                        } else {
+                          // Affiche un Snackbar avec le message d'erreur en cas d'échec
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(res),
+                              backgroundColor:
+                                  Colors.red, // Couleur rouge pour erreur
+                            ),
+                          );
+                        }
                       },
                       child: const Text(
                         'Log in',
