@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holbegram/widgets/text_field.dart';
 import 'signup_screen.dart';
+import 'auth/upload_image_screen.dart';
 import '../methods/auth_methods.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,6 +24,45 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _passwordVisible = false;
+
+  final AuthMethods _authMethods = AuthMethods();
+
+  Future<void> _login() async {
+    // Appel de la fonction login et stockage du résultat
+    String res = await _authMethods.login(
+      email: widget.emailController.text,
+      password: widget.passwordController.text,
+    );
+
+    // Vérification du résultat pour afficher un Snackbar
+    if (res == "success") {
+      // Affiche un Snackbar avec le texte "Login" en cas de succès
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Login successful'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddPicture(
+            email: widget.emailController.text,
+            username: 'John Doe',
+            password: widget.passwordController.text,
+          ),
+        ),
+      );
+    } else {
+      // Affiche un Snackbar avec le message d'erreur en cas d'échec
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(res),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,32 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(218, 226, 37, 24),
                       ),
-                      onPressed: () async {
-                        // Appel de la fonction login et stockage du résultat
-                        String res = await AuthMethods().login(
-                          email: widget.emailController.text,
-                          password: widget.passwordController.text,
-                        );
-
-                        // Vérification du résultat pour afficher un Snackbar
-                        if (res == "success") {
-                          // Affiche un Snackbar avec le texte "Login" en cas de succès
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Login successful'),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                        } else {
-                          // Affiche un Snackbar avec le message d'erreur en cas d'échec
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(res),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      },
+                      onPressed: _login,
                       child: const Text(
                         'Log in',
                         style: TextStyle(color: Colors.white),
