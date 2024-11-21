@@ -83,10 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 48,
                     width: double.infinity,
                     child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          const Color.fromARGB(218, 226, 37, 24),
-                        ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(218, 226, 37, 24),
                       ),
                       onPressed: () async {
                         // Appel de la fonction login et stockage du résultat
@@ -100,9 +98,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           // Affiche un Snackbar avec le texte "Login" en cas de succès
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Login'),
-                              backgroundColor:
-                                  Colors.green, // Couleur verte pour succès
+                              content: Text('Login successful'),
+                              backgroundColor: Colors.green,
                             ),
                           );
                         } else {
@@ -110,8 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(res),
-                              backgroundColor:
-                                  Colors.red, // Couleur rouge pour erreur
+                              backgroundColor: Colors.red,
                             ),
                           );
                         }
