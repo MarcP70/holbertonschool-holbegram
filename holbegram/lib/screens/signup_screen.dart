@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:holbegram/widgets/text_field.dart';
 import 'auth/upload_image_screen.dart';
-import '../methods/auth_methods.dart';
 
 class SignupScreen extends StatefulWidget {
   final TextEditingController emailController;
@@ -25,9 +24,28 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
 
-  final AuthMethods _authMethods = AuthMethods();
-
   Future<void> _signUp() async {
+    if (widget.usernameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Username is required')),
+      );
+      return;
+    }
+
+    if (widget.emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Email is required')),
+      );
+      return;
+    }
+
+    if (widget.passwordController.text.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password must be at least 6 characters')),
+      );
+      return;
+    }
+
     if (widget.passwordController.text !=
         widget.passwordConfirmController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -36,28 +54,16 @@ class _SignupScreenState extends State<SignupScreen> {
       return;
     }
 
-    String result = await _authMethods.signUpUser(
-      email: widget.emailController.text,
-      password: widget.passwordController.text,
-      username: widget.usernameController.text,
-    );
-
-    if (result == 'success') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AddPicture(
-            email: widget.emailController.text,
-            username: widget.usernameController.text,
-            password: widget.passwordController.text,
-          ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddPicture(
+          email: widget.emailController.text,
+          username: widget.usernameController.text,
+          password: widget.passwordController.text,
         ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result)),
-      );
-    }
+      ),
+    );
   }
 
   @override
