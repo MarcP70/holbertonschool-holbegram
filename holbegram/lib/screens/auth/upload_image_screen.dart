@@ -174,38 +174,70 @@ class _AddPictureState extends State<AddPicture> {
 
             // Display the selected or captured image if it exists, otherwise show the default image
             _image != null
-                ? Image.memory(
-                    _image!,
-                    height: 200,
-                    width: 200,
-                    fit: BoxFit.cover,
+                ? ClipOval(
+                    child: Image.memory(
+                      _image!,
+                      height: 200,
+                      width: 200,
+                      fit: BoxFit.cover,
+                    ),
                   )
-                : Image.asset(
-                    'assets/images/Sample_User_Icon.png',
-                    height: 200,
-                    width: 200,
-                    fit: BoxFit.cover,
+                : ClipOval(
+                    child: Image.asset(
+                      'assets/images/Sample_User_Icon.png',
+                      height: 200,
+                      width: 200,
+                      fit: BoxFit.cover,
+                    ),
                   ),
             const SizedBox(height: 20),
 
-            // Button to select an image from the gallery
-            ElevatedButton(
-              onPressed: selectImageFromGallery,
-              child: const Text('Select Image from Gallery'),
-            ),
+            // Row to place IconButtons side by side
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Button to select an image from the gallery
+                IconButton(
+                  onPressed: selectImageFromGallery,
+                  icon: const Icon(
+                    Icons.image_outlined,
+                    size: 30,
+                    color: Colors.red,
+                  ),
+                ),
 
-            // Button to capture an image using the camera
-            ElevatedButton(
-              onPressed: selectImageFromCamera,
-              child: const Text('Capture Image from Camera'),
+                // Button to capture an image using the camera
+                IconButton(
+                  onPressed: selectImageFromCamera,
+                  icon: const Icon(
+                    Icons.camera_alt_outlined,
+                    size: 30,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
             ),
-
             const SizedBox(height: 20),
 
             // Button to proceed with sign-up
             ElevatedButton(
               onPressed: handleSignUp,
-              child: const Text('Next'),
+              style: ButtonStyle(
+                backgroundColor: const WidgetStatePropertyAll(Colors.red),
+                foregroundColor: const WidgetStatePropertyAll(Colors.white),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+              ),
+              child: const Text(
+                'Next',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),
