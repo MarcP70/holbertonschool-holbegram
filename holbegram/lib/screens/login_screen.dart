@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holbegram/widgets/text_field.dart';
 import 'signup_screen.dart';
-import 'auth/upload_image_screen.dart';
+import '../screens/home.dart';
 import '../methods/auth_methods.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -24,15 +24,37 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _passwordVisible = false;
-
+  bool _isLoading = false; // Indicateur de chargement
   final AuthMethods _authMethods = AuthMethods();
 
   Future<void> _login() async {
+    // Vérification que les champs ne sont pas vides
+    if (widget.emailController.text.isEmpty ||
+        widget.passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill in all fields'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Démarre l'indicateur de chargement
+    setState(() {
+      _isLoading = true;
+    });
+
     // Appel de la fonction login et stockage du résultat
     String res = await _authMethods.login(
       email: widget.emailController.text,
       password: widget.passwordController.text,
     );
+
+    // Arrête l'indicateur de chargement
+    setState(() {
+      _isLoading = false;
+    });
 
     // Vérification du résultat pour afficher un Snackbar
     if (res == "success") {
@@ -43,14 +65,11 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.push(
+      // Utilise pushReplacement pour éviter de revenir en arrière
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => AddPicture(
-            email: widget.emailController.text,
-            username: 'John Doe',
-            password: widget.passwordController.text,
-          ),
+          builder: (context) => const Home(),
         ),
       );
     } else {
@@ -126,11 +145,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(218, 226, 37, 24),
                       ),
-                      onPressed: _login,
-                      child: const Text(
-                        'Log in',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      onPressed: _isLoading
+                          ? null
+                          : _login, // Désactive si en chargement
+                      child: _isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              'Log in',
+                              style: TextStyle(color: Colors.white),
+                            ),
                     ),
                   ),
                   const SizedBox(height: 24),
