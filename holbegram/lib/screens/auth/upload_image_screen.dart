@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../methods/auth_methods.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../screens/home.dart';
 
 class AddPicture extends StatefulWidget {
   final String email;
@@ -97,6 +98,12 @@ class _AddPictureState extends State<AddPicture> {
       // Show a snackbar on success
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Sign-up successful!')),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Home(),
+        ),
       );
     } else {
       // Show an error message if sign-up fails
