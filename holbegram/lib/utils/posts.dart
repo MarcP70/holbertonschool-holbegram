@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/post.dart'; // Importer le modèle Post
 import 'package:provider/provider.dart';
 import '../providers/user_provider.dart';
+import '../screens/Pages/methods/post_storage.dart';
 
 class Posts extends StatefulWidget {
   const Posts({super.key});
@@ -46,8 +47,8 @@ class _PostsState extends State<Posts> {
           itemCount: posts.length,
           itemBuilder: (context, index) {
             final post = posts[index]; // Accéder à l'objet Post
-            print('URL de l\'image du post : ${post.postUrl}');
-            print('URL de l\'image de profil : ${post.profImage}');
+            //print('URL de l\'image du post : ${post.postUrl}');
+            //print('URL de l\'image de profil : ${post.profImage}');
 
             return Container(
               margin: const EdgeInsets.all(8),
@@ -71,7 +72,7 @@ class _PostsState extends State<Posts> {
                           ),
                           child: ClipOval(
                             child: Image.network(
-                              post.profImage, // Utiliser post.profImage
+                              post.profImage,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return const Icon(Icons.error);
@@ -89,12 +90,27 @@ class _PostsState extends State<Posts> {
                         const Spacer(),
                         IconButton(
                           icon: const Icon(Icons.more_horiz),
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Post Deleted'),
-                              ),
-                            );
+                          onPressed: () async {
+                            final postStorage =
+                                PostStorage(); // Create instance of PostStorage
+
+                            try {
+                              // Delete the post
+                              await postStorage.deletePost(
+                                  post.postId); // Pass the postId to delete
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Post Deleted'),
+                                ),
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Failed to delete post: $e'),
+                                ),
+                              );
+                            }
                           },
                         ),
                       ],
@@ -107,7 +123,7 @@ class _PostsState extends State<Posts> {
                     child: Center(
                       // Utilise Center pour centrer le texte
                       child: Text(
-                        post.caption ?? 'No caption available',
+                        post.caption,
                         style: const TextStyle(fontSize: 16),
                       ),
                     ),
