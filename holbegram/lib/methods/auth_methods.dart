@@ -79,4 +79,25 @@ class AuthMethods {
     }
     return res;
   }
+
+  // getUserDetails method
+  Future<Users?> getUserDetails() async {
+    try {
+      // Get the current Firebase user
+      User? currentUser = _auth.currentUser;
+
+      // If the user is authenticated
+      if (currentUser != null) {
+        // Retrieve the user document from Firestore
+        DocumentSnapshot userSnap =
+            await _firestore.collection('users').doc(currentUser.uid).get();
+
+        // Return a Users object using the fromSnap method
+        return Users.fromSnap(userSnap);
+      }
+    } catch (err) {
+      print("Error getting user details: $err");
+    }
+    return null; // Return null if the user is not authenticated or an error occurs
+  }
 }
