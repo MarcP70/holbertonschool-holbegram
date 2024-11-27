@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:provider/provider.dart'; // Ajout du package Provider
+import 'package:provider/provider.dart';
 import './screens/login_screen.dart';
-import './screens/home.dart';
 import './providers/user_provider.dart';
 
 Future main() async {
