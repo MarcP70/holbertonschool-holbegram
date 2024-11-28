@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
-import '../../../screens/auth/methods/user_storage.dart';
+//import '../../../screens/auth/methods/user_storage.dart';
 
 class PostStorage {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -19,12 +19,13 @@ class PostStorage {
       String postId = const Uuid().v4();
 
       // Upload image to storage and get URL
+      /*
       String postUrl = await StorageMethods().uploadImageToStorage(
         'posts', // Specify the folder for storing posts
         image, // Pass the image as Uint8List
         true, // Specify that it's a post
       );
-
+      */
       // Create post data
       Map<String, dynamic> postData = {
         'caption': caption,
@@ -32,7 +33,7 @@ class PostStorage {
         'username': username,
         'profImage': profImage,
         'postId': postId,
-        'postUrl': postUrl,
+        'postUrl': randomPostUrl(),
         'datePublished': DateTime.now(),
         'likes': [], // Default empty likes list
       };
@@ -57,4 +58,9 @@ class PostStorage {
       rethrow; // Re-throw the error if needed
     }
   }
+}
+
+randomPostUrl() {
+  String id = const Uuid().v4();
+  return 'https://picsum.photos/seed/$id/200/300';
 }
