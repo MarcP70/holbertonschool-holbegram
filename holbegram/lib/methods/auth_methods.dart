@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:typed_data'; // For handling the file (profile picture)
-import '../models/user.dart'; // Import the Users class
+import 'dart:typed_data';
+import '../models/user.dart';
+import 'package:uuid/uuid.dart';
 
 class AuthMethods {
   // Firebase authentication and Firestore instances
@@ -34,7 +35,7 @@ class AuthMethods {
     required String email,
     required String password,
     required String username,
-    Uint8List? file, // Nullable for handling profile picture
+    Uint8List? file,
   }) async {
     String res = "An error occurred";
     try {
@@ -58,7 +59,7 @@ class AuthMethods {
             email: email,
             username: username,
             bio: '',
-            photoUrl: '', // You can add a profile photo upload process later
+            photoUrl: randomPhotoUrl(),
             followers: [],
             following: [],
             posts: [],
@@ -100,4 +101,9 @@ class AuthMethods {
     }
     return null; // Return null if the user is not authenticated or an error occurs
   }
+}
+
+randomPhotoUrl() {
+  String id = const Uuid().v4();
+  return 'https://picsum.photos/seed/$id/300/200';
 }
