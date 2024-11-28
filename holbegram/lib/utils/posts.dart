@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/post.dart'; // Importer le modèle Post
-import 'package:provider/provider.dart';
-import '../providers/user_provider.dart';
+//import 'package:provider/provider.dart';
+//import '../providers/user_provider.dart';
 import '../screens/Pages/methods/post_storage.dart';
 
 class Posts extends StatefulWidget {
@@ -16,8 +16,8 @@ class _PostsState extends State<Posts> {
   @override
   Widget build(BuildContext context) {
     // Utiliser Provider pour obtenir les détails de l'utilisateur actuel
-    final userProvider = Provider.of<UserProvider>(context);
-    final currentUser = userProvider.getUser;
+    //final userProvider = Provider.of<UserProvider>(context);
+    //final currentUser = userProvider.getUser;
 
     return StreamBuilder(
       // Stream qui écoute la collection 'posts' dans Firestore
@@ -65,18 +65,13 @@ class _PostsState extends State<Posts> {
                     child: Row(
                       children: [
                         Container(
-                          width: 60,
-                          height: 60,
-                          decoration: const BoxDecoration(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                          ),
-                          child: ClipOval(
-                            child: Image.network(
-                              post.profImage,
+                            image: DecorationImage(
+                              image: NetworkImage(post.profImage),
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.error);
-                              },
                             ),
                           ),
                         ),
