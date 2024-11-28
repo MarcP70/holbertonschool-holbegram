@@ -2,11 +2,13 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import './methods/post_storage.dart';
+import '../../methods/auth_methods.dart';
+import '../../models/user.dart';
 
 class AddImage extends StatefulWidget {
-  const AddImage({super.key});
+  final PageController pageController;
+  const AddImage({required this.pageController, super.key});
 
   @override
   _AddImageState createState() => _AddImageState();
@@ -114,29 +116,38 @@ class _AddImageState extends State<AddImage> {
 
     // Récupération des données de l'utilisateur connecté
     final user = FirebaseAuth.instance.currentUser;
+    final AuthMethods authMethods = AuthMethods();
+
     if (user != null) {
-      String uid = user.uid;
-      String username = user.displayName ?? 'Anonymous';
-      String profImage = user.photoURL ?? '';
+      // Récupérer les informations personnalisées de Firestore
+      Users? userDetails = await authMethods.getUserDetails();
 
-      // Appel de la méthode uploadPost
-      String result = await PostStorage()
-          .uploadPost(caption, uid, username, profImage, _image!);
+      if (userDetails != null) {
+        String uid = userDetails.uid;
+        String username = userDetails.username;
+        String profImage = userDetails.photoUrl;
 
-      if (result == 'Ok') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Post uploaded successfully!')),
-        );
-        // Réinitialisation après la publication du post
-        setState(() {
-          _image = null;
-          caption = '';
-          _captionController.clear();
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error uploading post: $result')),
-        );
+        // Appel de la méthode uploadPost
+        String result = await PostStorage()
+            .uploadPost(caption, uid, username, profImage, _image!);
+
+        if (result == 'Ok') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Post uploaded successfully!')),
+          );
+          // Réinitialisation après la publication du post
+          setState(() {
+            _image = null;
+            caption = '';
+            _captionController.clear();
+          });
+          // Redirection vers l'onglet Home
+          widget.pageController.jumpToPage(0);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error uploading post: $result')),
+          );
+        }
       }
     }
   }
