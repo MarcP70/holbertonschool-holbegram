@@ -82,12 +82,12 @@ class _BottomNavState extends State<BottomNav> {
       body: PageView(
         controller: _pageController,
         onPageChanged: onPageChanged,
-        children: const [
-          Feed(),
-          Search(),
-          AddImage(),
-          Favorite(),
-          Profile(),
+        children: [
+          const Feed(),
+          const Search(),
+          AddImage(pageController: _pageController),
+          const Favorite(),
+          const Profile(),
         ],
       ),
       bottomNavigationBar: BottomNavyBar(
