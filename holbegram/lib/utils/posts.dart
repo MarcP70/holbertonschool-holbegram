@@ -4,6 +4,7 @@ import '../models/post.dart'; // Importer le modèle Post
 //import 'package:provider/provider.dart';
 //import '../providers/user_provider.dart';
 import '../screens/Pages/methods/post_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Posts extends StatefulWidget {
   const Posts({super.key});
@@ -13,6 +14,33 @@ class Posts extends StatefulWidget {
 }
 
 class _PostsState extends State<Posts> {
+
+  Future<void> toggleLike(Post post) async {
+    final currentUserUid = FirebaseAuth.instance.currentUser!.uid;
+    final postRef =
+        FirebaseFirestore.instance.collection('posts').doc(post.postId);
+
+    try {
+      if (post.likes.contains(currentUserUid)) {
+        // Si déjà liké, retirer le like
+        await postRef.update({
+          'likes': FieldValue.arrayRemove([currentUserUid]),
+        });
+      } else {
+        // Sinon, ajouter le like
+        await postRef.update({
+          'likes': FieldValue.arrayUnion([currentUserUid]),
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erreur : $e'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Utiliser Provider pour obtenir les détails de l'utilisateur actuel
@@ -147,8 +175,19 @@ class _PostsState extends State<Posts> {
                         Row(
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.favorite_border),
-                              onPressed: () {},
+                              icon: Icon(
+                                post.likes.contains(
+                                        FirebaseAuth.instance.currentUser!.uid)
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: post.likes.contains(
+                                        FirebaseAuth.instance.currentUser!.uid)
+                                    ? Colors.red
+                                    : Colors.black,
+                              ),
+                              onPressed: () {
+                                toggleLike(post); // Appel de la fonction
+                              },
                             ),
                             IconButton(
                               icon: const Icon(Icons.chat_bubble_outline),
