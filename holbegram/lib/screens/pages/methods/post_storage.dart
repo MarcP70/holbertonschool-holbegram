@@ -41,6 +41,11 @@ class PostStorage {
       // Add post to Firestore
       await _firestore.collection('posts').doc(postId).set(postData);
 
+      // Update the user's document to add the postId to their 'posts' array
+      await _firestore.collection('users').doc(uid).update({
+        'posts': FieldValue.arrayUnion([postId])
+      });
+
       return 'Ok';
     } catch (e) {
       // Return error message
@@ -51,8 +56,26 @@ class PostStorage {
   // Method to delete a post
   Future<void> deletePost(String postId) async {
     try {
-      // Delete post from Firestore
+      // Récupérer le document du post pour accéder à l'uid de l'utilisateur
+      DocumentSnapshot postSnapshot =
+          await _firestore.collection('posts').doc(postId).get();
+
+      if (!postSnapshot.exists) {
+        throw Exception("Post not found");
+      }
+
+      // Extraire l'uid de l'utilisateur depuis le post
+      String uid = postSnapshot['uid'];
+
+      // Supprimer le post de la collection 'posts'
       await _firestore.collection('posts').doc(postId).delete();
+
+      // Mettre à jour la liste des posts de l'utilisateur en supprimant le postId
+      await _firestore.collection('users').doc(uid).update({
+        'posts': FieldValue.arrayRemove([postId])
+      });
+
+      debugPrint('Post deleted and user posts list updated');
     } catch (e) {
       debugPrint('Error deleting post: $e');
       rethrow; // Re-throw the error if needed
