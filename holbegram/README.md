@@ -2,6 +2,10 @@
 
 A new Flutter project.
 
+## Issues
+
+https://github.com/fluttercommunity/plus_plugins/issues/3303
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
