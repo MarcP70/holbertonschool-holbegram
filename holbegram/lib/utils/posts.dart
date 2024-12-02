@@ -14,7 +14,6 @@ class Posts extends StatefulWidget {
 }
 
 class _PostsState extends State<Posts> {
-
   Future<void> toggleLike(Post post) async {
     final currentUserUid = FirebaseAuth.instance.currentUser!.uid;
     final postRef =
@@ -207,7 +206,16 @@ class _PostsState extends State<Posts> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  // Texte affichant le nombre de likes
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Text(
+                      '${post.likes.length} Liked',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             );
